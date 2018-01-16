@@ -18,6 +18,7 @@ import User from 'lib/user';
 import userSettings from 'lib/user-settings';
 import { isMobile } from 'lib/viewport';
 import analytics from 'lib/analytics';
+import Translate from 'components/translate';
 
 const debug = debugModule( 'calypso:community-translator' );
 
@@ -109,7 +110,7 @@ const communityTranslatorJumpstart = {
 		// <data> returns a frozen object, therefore we make a copy so that we can modify it below
 		const dataElement = Object.assign(
 			{},
-			<data { ...props }>{ displayedTranslationFromPage }</data>
+			<Translate { ...props }>{ displayedTranslationFromPage }</Translate>
 		);
 
 		// now we can override the toString function which would otherwise return [object Object]
