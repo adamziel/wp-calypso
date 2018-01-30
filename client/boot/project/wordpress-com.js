@@ -23,7 +23,7 @@ import { setReduxStore as setReduxBridgeReduxStore } from 'lib/redux-bridge';
 import { getSiteFragment, normalize } from 'lib/route';
 import { isLegacyRoute } from 'lib/route/legacy-routes';
 import superProps from 'lib/analytics/super-props';
-import translatorJumpstart from 'lib/translator-jumpstart';
+import translator from 'lib/translator';
 import nuxWelcome from 'layout/nux-welcome';
 import emailVerification from 'components/email-verification';
 import { isDesktop } from 'lib/viewport';
@@ -57,7 +57,7 @@ export function utils() {
 	// prune sync-handler records more than two days old
 	pruneStaleRecords( '2 days' );
 
-	translatorJumpstart.init();
+	translator.refresh();
 }
 
 export const configureReduxStore = ( currentUser, reduxStore ) => {

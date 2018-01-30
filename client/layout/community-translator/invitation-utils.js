@@ -14,7 +14,7 @@ import store from 'store';
 /**
  * Internal dependencies
  */
-import translator from 'lib/translator-jumpstart';
+import translator from 'lib/translator';
 import userFactory from 'lib/user';
 import userSettings from 'lib/user-settings';
 import emitter from 'lib/mixins/emitter';
