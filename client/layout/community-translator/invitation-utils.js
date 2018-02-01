@@ -14,7 +14,6 @@ import store from 'store';
 /**
  * Internal dependencies
  */
-import translator from 'lib/translator';
 import userFactory from 'lib/user';
 import userSettings from 'lib/user-settings';
 import emitter from 'lib/mixins/emitter';
@@ -22,6 +21,10 @@ import preferencesStore from 'lib/preferences/store';
 import preferencesActions from 'lib/preferences/actions';
 import notices from 'notices';
 import analytics from 'lib/analytics';
+import {
+	isCommunityTranslatorEnabled,
+	canDisplayCommunityTranslator,
+} from 'components/community-translator/utils';
 
 const debug = Debug( 'calypso:community-translator-invitation' ),
 	user = userFactory(),
@@ -59,13 +62,13 @@ function maybeInvite() {
 		return;
 	}
 
-	if ( translator.isEnabled() ) {
+	if ( isCommunityTranslatorEnabled() ) {
 		debug( 'Not inviting, user already knows about the translator' );
 		permanentlyDisableInvitation();
 		return;
 	}
 
-	if ( ! translator.isValidBrowser() ) {
+	if ( ! canDisplayCommunityTranslator() ) {
 		debug( 'Not inviting, browser missing features' );
 		return;
 	}

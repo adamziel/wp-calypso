@@ -48,9 +48,13 @@ import { successNotice, errorNotice } from 'state/notices/actions';
 import { getLanguage } from 'lib/i18n-utils';
 import { isRequestingMissingSites } from 'state/selectors';
 import _user from 'lib/user';
+import {
+	canDisplayCommunityTranslator,
+} from 'components/community-translator/utils';
 
 const user = _user();
 const colorSchemeKey = 'calypso_preferences.colorScheme';
+const enableTranslatorKey = 'enable_translator';
 
 /**
  * Debug instance
@@ -98,6 +102,13 @@ const Account = createReactClass( {
 
 	updateUserSettingCheckbox( event ) {
 		this.updateUserSetting( event.target.name, event.target.checked );
+	},
+
+	updateCommunityTranslatorSetting( event ) {
+		const { name, checked } = event.target;
+		this.updateUserSetting( name, checked );
+		const redirect = '/me/account';
+		this.setState( { redirect } );
 	},
 
 	updateLanguage( event ) {
@@ -150,39 +161,36 @@ const Account = createReactClass( {
 
 	communityTranslator() {
 		const { translate } = this.props;
-		const userLocale = this.getUserSetting( 'language' );
-		const showTranslator = userLocale && userLocale !== 'en';
-		if ( showTranslator ) {
-			return (
-				<FormFieldset>
-					<FormLegend>{ translate( 'Community Translator' ) }</FormLegend>
-					<FormLabel>
-						<FormCheckbox
-							checked={ this.getUserSetting( 'enable_translator' ) }
-							onChange={ this.updateUserSettingCheckbox }
-							disabled={ this.getDisabledState() }
-							id="enable_translator"
-							name="enable_translator"
-							onClick={ this.recordCheckboxEvent( 'Community Translator' ) }
-						/>
-						<span>
-							{ translate( 'Enable the in-page translator where available. {{a}}Learn more{{/a}}', {
-								components: {
-									a: (
-										<a
-											target="_blank"
-											rel="noopener noreferrer"
-											href="https://en.support.wordpress.com/community-translator/"
-											onClick={ this.recordClickEvent( 'Community Translator Learn More Link' ) }
-										/>
-									),
-								},
-							} ) }
-						</span>
-					</FormLabel>
-				</FormFieldset>
-			);
-		}
+
+		return (
+			<FormFieldset>
+				<FormLegend>{ translate( 'Community Translator' ) }</FormLegend>
+				<FormLabel for={ enableTranslatorKey }>
+					<FormCheckbox
+						checked={ this.getUserSetting( 'enable_translator' ) }
+						onChange={ this.updateCommunityTranslatorSetting }
+						disabled={ this.getDisabledState() }
+						id={ enableTranslatorKey }
+						name={ enableTranslatorKey }
+						onClick={ this.recordCheckboxEvent( 'Community Translator' ) }
+					/>
+					<span>
+						{ translate( 'Enable the in-page translator where available. {{a}}Learn more{{/a}}', {
+							components: {
+								a: (
+									<a
+										target="_blank"
+										rel="noopener noreferrer"
+										href="https://en.support.wordpress.com/community-translator/"
+										onClick={ this.recordClickEvent( 'Community Translator Learn More Link' ) }
+									/>
+								),
+							},
+						} ) }
+					</span>
+				</FormLabel>
+			</FormFieldset>
+		);
 	},
 
 	thankTranslationContributors() {
@@ -545,7 +553,7 @@ const Account = createReactClass( {
 					{ this.thankTranslationContributors() }
 				</FormFieldset>
 
-				{ this.communityTranslator() }
+				{ canDisplayCommunityTranslator() && this.communityTranslator() }
 
 				{ config.isEnabled( 'me/account/color-scheme-picker' ) &&
 					supportsCssCustomProperties() && (
