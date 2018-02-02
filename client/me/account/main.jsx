@@ -165,7 +165,7 @@ const Account = createReactClass( {
 		return (
 			<FormFieldset>
 				<FormLegend>{ translate( 'Community Translator' ) }</FormLegend>
-				<FormLabel for={ enableTranslatorKey }>
+				<FormLabel htmlFor={ enableTranslatorKey }>
 					<FormCheckbox
 						checked={ this.getUserSetting( 'enable_translator' ) }
 						onChange={ this.updateCommunityTranslatorSetting }
@@ -553,7 +553,7 @@ const Account = createReactClass( {
 					{ this.thankTranslationContributors() }
 				</FormFieldset>
 
-				{ canDisplayCommunityTranslator() && this.communityTranslator() }
+				{ canDisplayCommunityTranslator( this.getUserSetting( 'language' ) ) && this.communityTranslator() }
 
 				{ config.isEnabled( 'me/account/color-scheme-picker' ) &&
 					supportsCssCustomProperties() && (

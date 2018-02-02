@@ -68,7 +68,7 @@ function maybeInvite() {
 		return;
 	}
 
-	if ( ! canDisplayCommunityTranslator() ) {
+	if ( ! canDisplayCommunityTranslator( locale ) ) {
 		debug( 'Not inviting, browser missing features' );
 		return;
 	}
