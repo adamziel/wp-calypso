@@ -6,7 +6,7 @@ import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { localize } from 'i18n-calypso';
-import { get, flow, invoke } from 'lodash';
+import { get, flow } from 'lodash';
 
 /**
  * Internal dependencies
@@ -18,7 +18,6 @@ import { recordTracksEvent } from 'state/analytics/actions';
 import { closePostRevisionsDialog, selectPostRevision } from 'state/posts/revisions/actions';
 import EditorRevisions from 'post-editor/editor-revisions';
 import Dialog from 'components/dialog';
-
 import CloseOnEscape from 'components/close-on-escape';
 
 class PostRevisionsDialog extends PureComponent {
@@ -85,11 +84,6 @@ class PostRevisionsDialog extends PureComponent {
 		];
 	};
 
-	onEscape = () => {
-		console.log('onEscape')
-		invoke( this.props, 'closeDialog' );
-	}
-
 	render() {
 		const { isVisible, closeDialog } = this.props;
 
@@ -100,7 +94,7 @@ class PostRevisionsDialog extends PureComponent {
 				isVisible={ isVisible }
 				onClose={ closeDialog }
 			>
-				<CloseOnEscape onEscape={ this.onEscape } />
+				<CloseOnEscape onEscape={ closeDialog } />
 				<EditorRevisions />
 			</Dialog>
 		);
