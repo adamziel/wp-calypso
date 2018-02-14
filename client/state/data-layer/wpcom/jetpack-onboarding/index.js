@@ -16,6 +16,7 @@ import {
 	JETPACK_ONBOARDING_SETTINGS_REQUEST,
 	JETPACK_ONBOARDING_SETTINGS_SAVE,
 } from 'state/action-types';
+import { exponentialBackoff } from 'state/data-layer/wpcom-http/pipeline/retry-on-failure/policies';
 import { getUnconnectedSite } from 'state/selectors';
 import {
 	saveJetpackOnboardingSettingsSuccess,
@@ -103,6 +104,7 @@ export const saveJetpackOnboardingSettings = ( { dispatch, getState }, action ) 
 					} ),
 					json: true,
 				},
+				retryPolicy: exponentialBackoff( { delay: 4000, maxAttempts: 5 } ),
 			},
 			action
 		)
