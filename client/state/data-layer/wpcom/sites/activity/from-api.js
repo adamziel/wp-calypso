@@ -65,6 +65,9 @@ export function processItem( item ) {
 		activityTitle: item.summary,
 		activityTs: Date.parse( published ),
 		activityDescription: parseBlock( item.content ),
+		activityMeta: {
+			themeSlug: get( item, 'items.0.object_slug', '' ).replace( '-wpcom', '' ),
+		},
 	};
 }
 

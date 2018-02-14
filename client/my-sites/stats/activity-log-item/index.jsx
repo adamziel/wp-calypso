@@ -3,10 +3,12 @@
  * External dependencies
  */
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import scrollTo from 'lib/scroll-to';
 import { localize } from 'i18n-calypso';
+import { get } from 'lodash';
 
 /**
  * Internal dependencies
@@ -15,6 +17,7 @@ import ActivityActor from './activity-actor';
 import ActivityIcon from './activity-icon';
 import ActivityLogConfirmDialog from '../activity-log-confirm-dialog';
 import Gridicon from 'gridicons';
+import Button from 'components/button';
 import HappychatButton from 'components/happychat/button';
 import SplitButton from 'components/split-button';
 import FoldableCard from 'components/foldable-card';
@@ -36,10 +39,20 @@ import {
 	getSiteGmtOffset,
 	getSiteTimezoneValue,
 } from 'state/selectors';
-
+import { getSelectedSiteSlug } from 'state/ui/selectors';
 import { adjustMoment } from '../activity-log/utils';
 
 class ActivityLogItem extends Component {
+	static propTypes = {
+		siteId: PropTypes.number.isRequired,
+
+		// Connected props
+		siteSlug: PropTypes.string.isRequired,
+
+		// localize
+		translate: PropTypes.func.isRequired,
+	};
+
 	confirmBackup = () => this.props.confirmBackup( this.props.activity.rewindId );
 
 	confirmRewind = () => this.props.confirmRewind( this.props.activity.rewindId );
@@ -74,7 +87,28 @@ class ActivityLogItem extends Component {
 	}
 
 	renderItemAction() {
-		const { hideRestore, activity: { activityIsRewindable, activityName } } = this.props;
+		const {
+			siteSlug,
+			translate,
+			hideRestore,
+			activity: { activityIsRewindable, activityName },
+		} = this.props;
+
+		if ( 'theme__update_available' === activityName ) {
+			const themeSlug = get( this.props.activity, 'activityMeta.themeSlug', '' );
+			return (
+				themeSlug && (
+					<Button
+						primary
+						compact
+						className="activity-log-item__action"
+						href={ `/theme/${ themeSlug }/${ siteSlug }` }
+					>
+						{ translate( 'Update theme' ) }
+					</Button>
+				)
+			);
+		}
 
 		if ( ! hideRestore && activityIsRewindable ) {
 			return this.renderRewindAction();
@@ -223,6 +257,7 @@ const mapStateToProps = ( state, { activityId, siteId } ) => ( {
 	mightBackup: activityId && activityId === getRequestedBackup( state, siteId ),
 	mightRewind: activityId && activityId === getRequestedRewind( state, siteId ),
 	timezone: getSiteTimezoneValue( state, siteId ),
+	siteSlug: getSelectedSiteSlug( state, siteId ),
 } );
 
 const mapDispatchToProps = ( dispatch, { activityId, siteId } ) => ( {
